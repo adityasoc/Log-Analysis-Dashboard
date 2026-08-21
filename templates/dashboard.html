@@ -684,9 +684,9 @@
 
                     <th>Detection</th>
 
-                    <th>Severity</th>
+                    <th>MITRE ATT&CK</th>
 
-                    <th>Score</th>
+                    <th>Severity</th>
 
                     <th>Message</th>
 
@@ -714,10 +714,20 @@
                 </td>
 
                 <td>
-                    {{ finding.type }}
-                </td>
+    {{ finding.type }}
+</td>
 
-                <td>
+<td>
+    {% if finding.mitre_id %}
+        <strong>{{ finding.mitre_id }}</strong>
+        <br>
+        <small>{{ finding.mitre_technique }}</small>
+    {% else %}
+        —
+    {% endif %}
+</td>
+
+<td>
 
 
                     {% if finding.severity == "Critical" %}
