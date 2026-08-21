@@ -1,10 +1,12 @@
-2026-08-21 09:10:12 INFO 192.168.1.10 User login successful
-2026-08-21 09:12:45 INFO 192.168.1.15 User login successful
-2026-08-21 09:15:21 WARNING 192.168.1.20 Multiple failed login attempts
-2026-08-21 09:16:03 ERROR 192.168.1.20 Authentication failed
-2026-08-21 09:16:45 ERROR 192.168.1.20 Authentication failed
-2026-08-21 09:17:10 CRITICAL 192.168.1.20 Possible brute force attack detected
-2026-08-21 09:20:32 INFO 192.168.1.25 User login successful
-2026-08-21 09:25:14 WARNING 192.168.1.30 Suspicious request detected
-2026-08-21 09:27:51 ERROR 192.168.1.30 Unauthorized access attempt
-2026-08-21 09:30:05 INFO 192.168.1.10 User logout successful
+2026-08-12 09:01:10 | INFO | src_ip=192.168.1.10 | user=alice | event=LOGIN | status=SUCCESS | message=User login successful
+2026-08-12 09:03:21 | WARN | src_ip=192.168.1.50 | user=admin | event=LOGIN | status=FAILED | message=Invalid password
+2026-08-12 09:03:29 | WARN | src_ip=192.168.1.50 | user=admin | event=LOGIN | status=FAILED | message=Invalid password
+2026-08-12 09:03:36 | WARN | src_ip=192.168.1.50 | user=admin | event=LOGIN | status=FAILED | message=Invalid password
+2026-08-12 09:03:44 | WARN | src_ip=192.168.1.50 | user=admin | event=LOGIN | status=FAILED | message=Invalid password
+2026-08-12 09:10:00 | INFO | src_ip=192.168.1.10 | user=alice | event=FILE_ACCESS | status=SUCCESS | message=Opened finance report
+2026-08-12 09:12:14 | ERROR | src_ip=192.168.1.77 | user=bob | event=PROCESS | status=BLOCKED | message=PowerShell encoded command blocked by endpoint policy
+2026-08-12 09:14:42 | INFO | src_ip=192.168.1.12 | user=charlie | event=LOGIN | status=SUCCESS | message=User login successful
+2026-08-12 09:16:03 | WARN | src_ip=192.168.1.77 | user=bob | event=NETWORK | status=DENIED | message=Outbound connection denied by firewall
+2026-08-12 09:19:11 | INFO | src_ip=192.168.1.20 | user=diana | event=FILE_ACCESS | status=SUCCESS | message=Opened project document
+2026-08-12 09:22:18 | ERROR | src_ip=10.0.0.44 | user=service | event=PROCESS | status=BLOCKED | message=Credential dumping tool detected and blocked
+2026-08-12 09:25:55 | INFO | src_ip=192.168.1.10 | user=alice | event=LOGOUT | status=SUCCESS | message=User logout successful
