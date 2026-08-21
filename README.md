@@ -256,3 +256,12 @@ https://github.com/adityasoc
 📜 License
 
 This project is provided for educational and portfolio purposes.
+
+---
+
+## 🖥️ Dashboard Preview
+
+The dashboard provides a visual overview of parsed logs, security findings, severity distribution, and suspicious IP risk.
+
+![Log Analysis Dashboard](screenshots/dashboard.png)
+
