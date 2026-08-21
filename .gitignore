@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+venv/
+.venv/
+
+# Flask
+instance/
+.webassets-cache/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated reports
+reports/*.pdf
+
+# Temporary test files
+data/test_attack.log
+
+# Environment files
+.env
+.env.*
+
+# Python cache
+.pytest_cache/
+.mypy_cache/

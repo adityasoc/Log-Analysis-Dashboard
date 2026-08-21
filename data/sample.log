@@ -1,0 +1,10 @@
+2026-08-21 09:10:12 INFO 192.168.1.10 User login successful
+2026-08-21 09:12:45 INFO 192.168.1.15 User login successful
+2026-08-21 09:15:21 WARNING 192.168.1.20 Multiple failed login attempts
+2026-08-21 09:16:03 ERROR 192.168.1.20 Authentication failed
+2026-08-21 09:16:45 ERROR 192.168.1.20 Authentication failed
+2026-08-21 09:17:10 CRITICAL 192.168.1.20 Possible brute force attack detected
+2026-08-21 09:20:32 INFO 192.168.1.25 User login successful
+2026-08-21 09:25:14 WARNING 192.168.1.30 Suspicious request detected
+2026-08-21 09:27:51 ERROR 192.168.1.30 Unauthorized access attempt
+2026-08-21 09:30:05 INFO 192.168.1.10 User logout successful

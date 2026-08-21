@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Security Log Analysis Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="logo">
+        🛡 Security Monitor
+    </div>
+
+    <nav>
+
+        <a href="/" class="active">
+            📊 Dashboard
+        </a>
+
+        <a href="#findings">
+            🚨 Security Findings
+        </a>
+
+        <a href="#logs">
+            📋 Log Events
+        </a>
+
+        <a href="#upload">
+            📁 Upload Logs
+        </a>
+
+    </nav>
+
+    <div class="system-status">
+        <span></span>
+        System Online
+    </div>
+
+</aside>
+
+
+<main class="main-content">
+
+
+<header class="header">
+
+    <div>
+
+        <h1>
+            Security Log Analysis
+        </h1>
+
+        <p>
+            Log monitoring and security event analysis
+        </p>
+
+    </div>
+
+    <div class="monitoring">
+        ● Monitoring Active
+    </div>
+
+</header>
+
+
+
+<!-- STATISTICS -->
+
+<section class="stats-grid">
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            📋
+        </div>
+
+        <div>
+
+            <p>Total Logs</p>
+
+            <h2>
+                {{ statistics.total_logs }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon danger">
+            🚨
+        </div>
+
+        <div>
+
+            <p>Security Findings</p>
+
+            <h2>
+                {{ statistics.total_findings }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon warning">
+            ⚠️
+        </div>
+
+        <div>
+
+            <p>High Risk</p>
+
+            <h2>
+                {{ statistics.high }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <div class="stat-icon critical">
+            🔥
+        </div>
+
+        <div>
+
+            <p>Critical</p>
+
+            <h2>
+                {{ statistics.critical }}
+            </h2>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- SECURITY OVERVIEW -->
+
+<section class="overview-grid">
+
+
+    <div class="panel">
+
+        <h3>
+            Security Overview
+        </h3>
+
+        <div class="severity-list">
+
+
+            <div class="severity-row">
+
+                <span>Critical</span>
+
+                <strong class="critical-text">
+                    {{ statistics.critical }}
+                </strong>
+
+            </div>
+
+
+            <div class="severity-row">
+
+                <span>High</span>
+
+                <strong class="high-text">
+                    {{ statistics.high }}
+                </strong>
+
+            </div>
+
+
+            <div class="severity-row">
+
+                <span>Medium</span>
+
+                <strong class="medium-text">
+                    {{ statistics.medium }}
+                </strong>
+
+            </div>
+
+
+            <div class="severity-row">
+
+                <span>Low</span>
+
+                <strong class="low-text">
+                    {{ statistics.low }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="panel">
+
+        <h3>
+            Log Levels
+        </h3>
+
+        <div class="severity-list">
+
+
+            {% for level, count in statistics.log_levels.items() %}
+
+            <div class="severity-row">
+
+                <span>
+                    {{ level }}
+                </span>
+
+                <strong>
+                    {{ count }}
+                </strong>
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- SECURITY CHARTS -->
+
+<section class="charts-grid">
+
+
+    <div class="panel">
+
+        <h3>
+            Severity Distribution
+        </h3>
+
+        <p class="panel-description">
+            Security findings by severity.
+        </p>
+
+
+        <div class="bar-chart">
+
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+                    Critical
+                </div>
+
+                <div class="bar-container">
+
+                    <div
+                        class="bar critical-bar"
+                        data-value="{{ statistics.critical }}"
+                    ></div>
+
+                </div>
+
+                <div class="bar-value">
+                    {{ statistics.critical }}
+                </div>
+
+            </div>
+
+
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+                    High
+                </div>
+
+                <div class="bar-container">
+
+                    <div
+                        class="bar high-bar"
+                        data-value="{{ statistics.high }}"
+                    ></div>
+
+                </div>
+
+                <div class="bar-value">
+                    {{ statistics.high }}
+                </div>
+
+            </div>
+
+
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+                    Medium
+                </div>
+
+                <div class="bar-container">
+
+                    <div
+                        class="bar medium-bar"
+                        data-value="{{ statistics.medium }}"
+                    ></div>
+
+                </div>
+
+                <div class="bar-value">
+                    {{ statistics.medium }}
+                </div>
+
+            </div>
+
+
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+                    Low
+                </div>
+
+                <div class="bar-container">
+
+                    <div
+                        class="bar low-bar"
+                        data-value="{{ statistics.low }}"
+                    ></div>
+
+                </div>
+
+                <div class="bar-value">
+                    {{ statistics.low }}
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <div class="panel">
+
+        <h3>
+            Log Level Distribution
+        </h3>
+
+        <p class="panel-description">
+            Parsed log events.
+        </p>
+
+
+        <div class="bar-chart">
+
+
+            {% for level, count in statistics.log_levels.items() %}
+
+            <div class="bar-row">
+
+                <div class="bar-label">
+                    {{ level }}
+                </div>
+
+                <div class="bar-container">
+
+                    <div
+                        class="bar log-bar"
+                        data-value="{{ count }}"
+                    ></div>
+
+                </div>
+
+                <div class="bar-value">
+                    {{ count }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- TOP SUSPICIOUS IPS -->
+
+<section class="panel">
+
+    <h3>
+        Top Suspicious IPs
+    </h3>
+
+    <p class="panel-description">
+        IP addresses ranked by security risk.
+    </p>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Rank</th>
+
+                    <th>IP Address</th>
+
+                    <th>Events</th>
+
+                    <th>Risk Score</th>
+
+                    <th>Risk Level</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+            {% for item in statistics.ip_risk %}
+
+            <tr>
+
+                <td>
+                    #{{ loop.index }}
+                </td>
+
+                <td class="ip-address">
+                    {{ item.ip }}
+                </td>
+
+                <td>
+                    {{ item.events }}
+                </td>
+
+                <td>
+                    {{ item.score }}
+                </td>
+
+                <td>
+
+
+                    {% if item.risk == "Critical" %}
+
+                    <span class="badge critical-badge">
+                        Critical
+                    </span>
+
+
+                    {% elif item.risk == "High" %}
+
+                    <span class="badge high-badge">
+                        High
+                    </span>
+
+
+                    {% elif item.risk == "Medium" %}
+
+                    <span class="badge medium-badge">
+                        Medium
+                    </span>
+
+
+                    {% else %}
+
+                    <span class="badge low-badge">
+                        Low
+                    </span>
+
+                    {% endif %}
+
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="5">
+                    No suspicious IPs detected.
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- UPLOAD -->
+
+<section
+    class="panel"
+    id="upload"
+>
+
+    <h3>
+        Analyze Log File
+    </h3>
+
+   <div class="report-action">
+
+    <a
+        href="{{ url_for('generate_report') }}"
+        class="report-button"
+    >
+        📄 Export Security Report
+    </a>
+
+</div>
+
+
+    <p class="panel-description">
+        Upload a .log or .txt file.
+    </p>
+
+
+    <form
+        action="/upload"
+        method="POST"
+        enctype="multipart/form-data"
+        class="upload-form"
+    >
+
+        <input
+            type="file"
+            name="logfile"
+            accept=".log,.txt"
+            required
+        >
+
+        <button type="submit">
+            🔍 Analyze Log
+        </button>
+
+    </form>
+
+</section>
+
+
+
+<!-- SECURITY FINDINGS -->
+
+<section
+    class="panel"
+    id="findings"
+>
+
+    <div class="section-title">
+
+        <div>
+
+            <h3>
+                Security Findings
+            </h3>
+
+            <p class="panel-description">
+                Suspicious activities detected from logs.
+            </p>
+
+        </div>
+
+        <span class="event-count">
+            {{ statistics.total_findings }} Events
+        </span>
+
+    </div>
+
+
+    <!-- FILTERS -->
+
+    <div class="filters">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search IP, detection or message..."
+        >
+
+
+        <select id="severityFilter">
+
+            <option value="all">
+                All Severity
+            </option>
+
+            <option value="Critical">
+                Critical
+            </option>
+
+            <option value="High">
+                High
+            </option>
+
+            <option value="Medium">
+                Medium
+            </option>
+
+            <option value="Low">
+                Low
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <!-- FINDINGS TABLE -->
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Timestamp</th>
+
+                    <th>IP Address</th>
+
+                    <th>Detection</th>
+
+                    <th>Severity</th>
+
+                    <th>Score</th>
+
+                    <th>Message</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+            {% for finding in findings %}
+
+            <tr
+                class="finding-row"
+                data-severity="{{ finding.severity }}"
+            >
+
+                <td>
+                    {{ finding.timestamp }}
+                </td>
+
+                <td class="ip-address">
+                    {{ finding.ip }}
+                </td>
+
+                <td>
+                    {{ finding.type }}
+                </td>
+
+                <td>
+
+
+                    {% if finding.severity == "Critical" %}
+
+                    <span class="badge critical-badge">
+                        Critical
+                    </span>
+
+
+                    {% elif finding.severity == "High" %}
+
+                    <span class="badge high-badge">
+                        High
+                    </span>
+
+
+                    {% elif finding.severity == "Medium" %}
+
+                    <span class="badge medium-badge">
+                        Medium
+                    </span>
+
+
+                    {% else %}
+
+                    <span class="badge low-badge">
+                        Low
+                    </span>
+
+                    {% endif %}
+
+
+                </td>
+
+                <td>
+                    {{ finding.score }}/10
+                </td>
+
+                <td>
+                    {{ finding.message }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- LOG EVENTS -->
+
+<section
+    class="panel"
+    id="logs"
+>
+
+    <h3>
+        Log Events
+    </h3>
+
+    <p class="panel-description">
+        Parsed system activity.
+    </p>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Timestamp</th>
+
+                    <th>Level</th>
+
+                    <th>IP Address</th>
+
+                    <th>Message</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+            {% for log in logs %}
+
+            <tr>
+
+                <td>
+                    {{ log.timestamp }}
+                </td>
+
+                <td>
+                    {{ log.level }}
+                </td>
+
+                <td class="ip-address">
+                    {{ log.ip }}
+                </td>
+
+                <td>
+                    {{ log.message }}
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<footer>
+
+    Log Analysis & Security Monitoring System
+
+</footer>
+
+
+</main>
+
+
+
+<script>
+
+/* SECURITY CHARTS */
+
+const totalFindings =
+    Number("{{ statistics.total_findings }}");
+
+
+const critical =
+    Number("{{ statistics.critical }}");
+
+
+const high =
+    Number("{{ statistics.high }}");
+
+
+const medium =
+    Number("{{ statistics.medium }}");
+
+
+const low =
+    Number("{{ statistics.low }}");
+
+
+function getPercentage(value, total) {
+
+    if (total === 0) {
+
+        return 0;
+
+    }
+
+    return (value / total) * 100;
+
+}
+
+
+const criticalBar =
+    document.querySelector(".critical-bar");
+
+
+const highBar =
+    document.querySelector(".high-bar");
+
+
+const mediumBar =
+    document.querySelector(".medium-bar");
+
+
+const lowBar =
+    document.querySelector(".low-bar");
+
+
+if (criticalBar) {
+
+    criticalBar.style.width =
+        getPercentage(
+            critical,
+            totalFindings
+        ) + "%";
+
+}
+
+
+if (highBar) {
+
+    highBar.style.width =
+        getPercentage(
+            high,
+            totalFindings
+        ) + "%";
+
+}
+
+
+if (mediumBar) {
+
+    mediumBar.style.width =
+        getPercentage(
+            medium,
+            totalFindings
+        ) + "%";
+
+}
+
+
+if (lowBar) {
+
+    lowBar.style.width =
+        getPercentage(
+            low,
+            totalFindings
+        ) + "%";
+
+}
+
+
+
+/* LOG LEVEL CHART */
+
+const totalLogs =
+    Number("{{ statistics.total_logs }}");
+
+
+const logBars =
+    document.querySelectorAll(
+        ".log-bar"
+    );
+
+
+logBars.forEach(function(bar) {
+
+    const value =
+        Number(
+            bar.dataset.value
+        );
+
+    bar.style.width =
+        getPercentage(
+            value,
+            totalLogs
+        ) + "%";
+
+});
+
+
+
+/* FINDING SEARCH */
+
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
+
+
+const severityFilter =
+    document.getElementById(
+        "severityFilter"
+    );
+
+
+const findingRows =
+    document.querySelectorAll(
+        ".finding-row"
+    );
+
+
+function filterFindings() {
+
+    const searchText =
+        searchInput.value
+        .toLowerCase();
+
+
+    const severity =
+        severityFilter.value;
+
+
+    findingRows.forEach(function(row) {
+
+        const text =
+            row.textContent
+            .toLowerCase();
+
+
+        const rowSeverity =
+            row.dataset.severity;
+
+
+        const matchesSearch =
+            text.includes(
+                searchText
+            );
+
+
+        const matchesSeverity =
+            severity === "all" ||
+            rowSeverity === severity;
+
+
+        if (
+            matchesSearch &&
+            matchesSeverity
+        ) {
+
+            row.style.display = "";
+
+        }
+
+        else {
+
+            row.style.display = "none";
+
+        }
+
+    });
+
+}
+
+
+searchInput.addEventListener(
+    "input",
+    filterFindings
+);
+
+
+severityFilter.addEventListener(
+    "change",
+    filterFindings
+);
+
+</script>
+
+
+</body>
+
+</html>
