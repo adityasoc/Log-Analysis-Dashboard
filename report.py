@@ -1,36 +1,96 @@
 from fpdf import FPDF
 from datetime import datetime
+import os
+import re
 
+
+# ============================================================
+# TEXT CLEANING
+# ============================================================
+
+def clean_text(text):
+    """
+    Clean text before sending it to FPDF.
+    """
+
+    if text is None:
+        return ""
+
+    text = str(text)
+
+    replacements = {
+        "\u2013": "-",
+        "\u2014": "-",
+        "\u2018": "'",
+        "\u2019": "'",
+        "\u201c": '"',
+        "\u201d": '"',
+        "\u2022": "-",
+        "\u2026": "...",
+        "\u00a0": " ",
+    }
+
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+
+    # Remove unsupported control characters
+    text = re.sub(
+        r"[\x00-\x08\x0b\x0c\x0e-\x1f]",
+        "",
+        text
+    )
+
+    return text
+
+
+# ============================================================
+# PDF CLASS
+# ============================================================
 
 class SecurityReport(FPDF):
 
     def header(self):
 
-        self.set_font(
-            "Arial",
-            "B",
-            16
-        )
+        if self.page_no() > 1:
 
-        self.cell(
-            0,
-            10,
-            "Security Log Analysis Report",
-            ln=True,
-            align="C"
-        )
+            self.set_font(
+                "Helvetica",
+                "B",
+                10
+            )
 
-        self.ln(5)
+            self.set_text_color(
+                70,
+                70,
+                70
+            )
 
+            self.set_x(
+                self.l_margin
+            )
+
+            self.cell(
+                0,
+                8,
+                "Log Analysis Dashboard"
+            )
+
+            self.ln(8)
 
     def footer(self):
 
         self.set_y(-15)
 
         self.set_font(
-            "Arial",
+            "Helvetica",
             "",
             8
+        )
+
+        self.set_text_color(
+            100,
+            100,
+            100
         )
 
         self.cell(
@@ -40,16 +100,145 @@ class SecurityReport(FPDF):
             align="C"
         )
 
+    def section_title(self, title):
 
-def clean_text(text):
+        self.ln(5)
 
-    return str(text).encode(
-        "latin-1",
-        "replace"
-    ).decode(
-        "latin-1"
-    )
+        self.set_x(
+            self.l_margin
+        )
 
+        self.set_fill_color(
+            230,
+            235,
+            240
+        )
+
+        self.set_text_color(
+            25,
+            45,
+            75
+        )
+
+        self.set_font(
+            "Helvetica",
+            "B",
+            13
+        )
+
+        available_width = (
+            self.w
+            - self.l_margin
+            - self.r_margin
+        )
+
+        self.cell(
+            available_width,
+            9,
+            clean_text(title),
+            fill=True
+        )
+
+        self.ln(12)
+
+        self.set_text_color(
+            30,
+            30,
+            30
+        )
+
+    def safe_multicell(
+        self,
+        text,
+        height=7
+    ):
+        """
+        Safe wrapper around multi_cell.
+        """
+
+        text = clean_text(text)
+
+        self.set_x(
+            self.l_margin
+        )
+
+        available_width = (
+            self.w
+            - self.l_margin
+            - self.r_margin
+        )
+
+        # Prevent zero/negative width
+        if available_width <= 5:
+            self.add_page()
+
+            available_width = (
+                self.w
+                - self.l_margin
+                - self.r_margin
+            )
+
+        self.multi_cell(
+            available_width,
+            height,
+            text
+        )
+
+    def add_key_value(
+        self,
+        key,
+        value
+    ):
+
+        self.set_x(
+            self.l_margin
+        )
+
+        self.set_font(
+            "Helvetica",
+            "B",
+            10
+        )
+
+        self.cell(
+            50,
+            7,
+            clean_text(key)
+        )
+
+        self.set_font(
+            "Helvetica",
+            "",
+            10
+        )
+
+        remaining_width = (
+            self.w
+            - self.l_margin
+            - self.r_margin
+            - 50
+        )
+
+        if remaining_width <= 5:
+
+            self.ln(7)
+
+            remaining_width = (
+                self.w
+                - self.l_margin
+                - self.r_margin
+            )
+
+        self.multi_cell(
+            remaining_width,
+            7,
+            clean_text(value)
+        )
+
+
+# ============================================================
+# REPORT CREATION
+# ============================================================
 
 def create_report(
     logs,
@@ -58,255 +247,380 @@ def create_report(
     output_file
 ):
 
+    """
+    Generate Security Log Analysis PDF.
+
+    Parameters:
+        logs        -> parsed log entries
+        findings    -> detected suspicious events
+        statistics  -> analysis statistics
+        output_file -> PDF output path
+    """
+
+    # --------------------------------------------------------
+    # Prepare output directory
+    # --------------------------------------------------------
+
+    output_directory = os.path.dirname(
+        output_file
+    )
+
+    if output_directory:
+
+        os.makedirs(
+            output_directory,
+            exist_ok=True
+        )
+
+    # --------------------------------------------------------
+    # Create PDF
+    # --------------------------------------------------------
+
     pdf = SecurityReport()
 
     pdf.set_auto_page_break(
         auto=True,
-        margin=15
+        margin=20
     )
+
+    pdf.set_margins(
+        left=15,
+        top=15,
+        right=15
+    )
+
+    # --------------------------------------------------------
+    # TITLE PAGE
+    # --------------------------------------------------------
 
     pdf.add_page()
 
+    pdf.set_fill_color(
+        25,
+        45,
+        75
+    )
 
+    pdf.rect(
+        0,
+        0,
+        pdf.w,
+        45,
+        "F"
+    )
+
+    pdf.set_text_color(
+        255,
+        255,
+        255
+    )
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        22
+    )
+
+    pdf.set_y(14)
+
+    pdf.cell(
+        0,
+        10,
+        "LOG ANALYSIS DASHBOARD",
+        align="C"
+    )
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
+
+    pdf.set_y(28)
+
+    pdf.cell(
+        0,
+        8,
+        "Security Log Analysis Report",
+        align="C"
+    )
+
+    # --------------------------------------------------------
     # REPORT INFORMATION
+    # --------------------------------------------------------
+
+    pdf.set_y(65)
+
+    pdf.set_text_color(
+        30,
+        30,
+        30
+    )
 
     pdf.set_font(
-        "Arial",
+        "Helvetica",
         "B",
-        12
+        14
     )
 
     pdf.cell(
         0,
-        8,
-        "Report Information",
-        ln=True
+        10,
+        "Report Information"
     )
 
+    pdf.ln(14)
+
     pdf.set_font(
-        "Arial",
+        "Helvetica",
         "",
         10
     )
 
-    pdf.cell(
-        0,
-        7,
-        clean_text(
-            "Generated: "
-            + datetime.now().strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
-        ),
-        ln=True
+    generated_time = datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
     )
 
-    pdf.cell(
-        0,
-        7,
-        f"Total Logs: {statistics['total_logs']}",
-        ln=True
+    pdf.safe_multicell(
+        f"Generated: {generated_time}",
+        7
     )
 
-    pdf.cell(
-        0,
-        7,
-        f"Total Findings: {statistics['total_findings']}",
-        ln=True
+    pdf.safe_multicell(
+        f"Total Log Entries: {len(logs) if logs else 0}",
+        7
     )
 
-    pdf.ln(5)
-
-
-    # SECURITY SUMMARY
-
-    pdf.set_font(
-        "Arial",
-        "B",
-        12
+    pdf.safe_multicell(
+        f"Detected Findings: {len(findings) if findings else 0}",
+        7
     )
 
-    pdf.cell(
-        0,
-        8,
-        "Security Summary",
-        ln=True
-    )
-
-    pdf.set_font(
-        "Arial",
-        "",
-        10
-    )
-
-    pdf.cell(
-        0,
-        7,
-        f"Critical: {statistics['critical']}",
-        ln=True
-    )
-
-    pdf.cell(
-        0,
-        7,
-        f"High: {statistics['high']}",
-        ln=True
-    )
-
-    pdf.cell(
-        0,
-        7,
-        f"Medium: {statistics['medium']}",
-        ln=True
-    )
-
-    pdf.cell(
-        0,
-        7,
-        f"Low: {statistics['low']}",
-        ln=True
-    )
-
-    pdf.ln(5)
-
-
-    # SUSPICIOUS IPS
-
-    pdf.set_font(
-        "Arial",
-        "B",
-        12
-    )
-
-    pdf.cell(
-        0,
-        8,
-        "Top Suspicious IP Addresses",
-        ln=True
-    )
-
-    pdf.set_font(
-        "Arial",
-        "",
-        10
-    )
-
-
-    for item in statistics["ip_risk"]:
-
-        text = (
-            f"{item['ip']} | "
-            f"Events: {item['events']} | "
-            f"Score: {item['score']} | "
-            f"Risk: {item['risk']}"
-        )
-
-        pdf.cell(
-            0,
-            7,
-            clean_text(text),
-            ln=True
-        )
-
-
-    pdf.ln(5)
-
-
-    # SECURITY FINDINGS
-
-    pdf.set_font(
-        "Arial",
-        "B",
-        12
-    )
-
-    pdf.cell(
-        0,
-        8,
-        "Security Findings",
-        ln=True
-    )
-
-    pdf.set_font(
-        "Arial",
-        "",
-        9
-    )
-
-
-    for finding in findings:
-
-        pdf.multi_cell(
-            0,
-            6,
-            clean_text(
-                f"[{finding['severity']}] "
-                f"{finding['type']} | "
-                f"IP: {finding['ip']} | "
-                f"Score: {finding['score']}/10\n"
-                f"Time: {finding['timestamp']}\n"
-                f"Message: {finding['message']}"
-            )
-        )
-
-        pdf.ln(2)
-
-
-    # RECOMMENDATIONS
+    # --------------------------------------------------------
+    # STATISTICS
+    # --------------------------------------------------------
 
     pdf.add_page()
 
-    pdf.set_font(
-        "Arial",
-        "B",
-        12
+    pdf.section_title(
+        "Security Statistics"
     )
 
-    pdf.cell(
-        0,
-        8,
-        "Security Recommendations",
-        ln=True
+    if isinstance(
+        statistics,
+        dict
+    ):
+
+        for key, value in statistics.items():
+
+            pdf.add_key_value(
+                f"{key}:",
+                value
+            )
+
+    elif statistics:
+
+        pdf.safe_multicell(
+            statistics,
+            7
+        )
+
+    else:
+
+        pdf.safe_multicell(
+            "No statistics available.",
+            7
+        )
+
+    # --------------------------------------------------------
+    # FINDINGS
+    # --------------------------------------------------------
+
+    pdf.section_title(
+        "Security Findings"
     )
 
-    pdf.set_font(
-        "Arial",
-        "",
-        10
+    if findings:
+
+        for number, finding in enumerate(
+            findings,
+            start=1
+        ):
+
+            if isinstance(
+                finding,
+                dict
+            ):
+
+                finding_parts = []
+
+                for key, value in finding.items():
+
+                    finding_parts.append(
+                        f"{key}: {value}"
+                    )
+
+                finding_text = (
+                    f"{number}. "
+                    + " | ".join(
+                        finding_parts
+                    )
+                )
+
+            else:
+
+                finding_text = (
+                    f"{number}. {finding}"
+                )
+
+            pdf.safe_multicell(
+                finding_text,
+                7
+            )
+
+            pdf.ln(2)
+
+    else:
+
+        pdf.safe_multicell(
+            "No suspicious findings detected.",
+            7
+        )
+
+    # --------------------------------------------------------
+    # LOG SAMPLE
+    # --------------------------------------------------------
+
+    pdf.section_title(
+        "Log Entries"
     )
 
+    if logs:
+
+        # Show maximum 100 entries
+        # to prevent extremely large PDFs.
+
+        display_logs = logs[:100]
+
+        for number, log_entry in enumerate(
+            display_logs,
+            start=1
+        ):
+
+            if isinstance(
+                log_entry,
+                dict
+            ):
+
+                parts = []
+
+                for key, value in log_entry.items():
+
+                    parts.append(
+                        f"{key}: {value}"
+                    )
+
+                log_text = (
+                    f"{number}. "
+                    + " | ".join(parts)
+                )
+
+            else:
+
+                log_text = (
+                    f"{number}. {log_entry}"
+                )
+
+            pdf.safe_multicell(
+                log_text,
+                6
+            )
+
+            pdf.ln(1)
+
+        if len(logs) > 100:
+
+            pdf.ln(3)
+
+            pdf.safe_multicell(
+                f"Only the first 100 log entries "
+                f"are displayed. Total entries: {len(logs)}.",
+                6
+            )
+
+    else:
+
+        pdf.safe_multicell(
+            "No log entries available.",
+            7
+        )
+
+    # --------------------------------------------------------
+    # RECOMMENDATIONS
+    # --------------------------------------------------------
+
+    pdf.section_title(
+        "Security Recommendations"
+    )
 
     recommendations = [
 
-        "Investigate all Critical security findings immediately.",
+        "Review failed login attempts and investigate repeated authentication failures.",
 
-        "Review repeated authentication failures.",
+        "Investigate suspicious IP addresses and unusual access patterns.",
 
-        "Monitor high-risk IP addresses.",
-
-        "Consider temporary blocking of confirmed malicious IPs.",
+        "Consider temporary blocking of confirmed malicious IP addresses.",
 
         "Enable multi-factor authentication for sensitive accounts.",
 
         "Review authentication and access-control policies.",
 
-        "Continue monitoring logs for repeated suspicious activity."
+        "Continue monitoring logs for repeated suspicious activity.",
 
     ]
-
 
     for number, recommendation in enumerate(
         recommendations,
         start=1
     ):
 
-        pdf.multi_cell(
-            0,
-            7,
-            clean_text(
-                f"{number}. {recommendation}"
-            )
+        pdf.safe_multicell(
+            f"{number}. {recommendation}",
+            7
         )
 
+        pdf.ln(1)
 
-    pdf.output(output_file)
+    # --------------------------------------------------------
+    # DISCLAIMER
+    # --------------------------------------------------------
+
+    pdf.ln(8)
+
+    pdf.set_font(
+        "Helvetica",
+        "I",
+        8
+    )
+
+    pdf.set_text_color(
+        100,
+        100,
+        100
+    )
+
+    pdf.safe_multicell(
+        "This report is generated for educational "
+        "and defensive cybersecurity analysis purposes.",
+        5
+    )
+
+    # --------------------------------------------------------
+    # SAVE PDF
+    # --------------------------------------------------------
+
+    pdf.output(
+        output_file
+    )
+
+    return output_file
