@@ -702,3 +702,4 @@ tr:hover {
 .report-button:active {
     transform: translateY(0);
 }
+.analyze-icon { font-size: 16px; display: inline-block; margin-right: 5px; }
