@@ -331,6 +331,15 @@ def get_statistics(logs, findings):
         findings
     )
 
+    mitre_counts = Counter(
+        (
+            finding.get("mitre_id"),
+            finding.get("mitre_technique")
+        )
+        for finding in findings
+        if finding.get("mitre_id")
+    )
+
     return {
 
         "total_logs": len(logs),
@@ -360,6 +369,17 @@ def get_statistics(logs, findings):
         "top_ips": ip_counts.most_common(),
 
         "ip_risk": ip_risk,
+                "mitre_summary": [
+            {
+                "id": mitre_id,
+                "technique": technique,
+                "events": count
+            }
+            for (
+                mitre_id,
+                technique
+            ), count in mitre_counts.most_common()
+        ],
 
         "log_levels": dict(
             level_counts

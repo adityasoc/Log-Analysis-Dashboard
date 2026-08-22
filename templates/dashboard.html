@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -22,25 +22,25 @@
 <aside class="sidebar">
 
     <div class="logo">
-        🛡 Security Monitor
+        &#x1F6E1; Security Monitor
     </div>
 
     <nav>
 
         <a href="/" class="active">
-            📊 Dashboard
+            &#x1F4CA; Dashboard
         </a>
 
         <a href="#findings">
-            🚨 Security Findings
+            &#x1F6A8; Security Findings
         </a>
 
         <a href="#logs">
-            📋 Log Events
+            &#x1F4CB; Log Events
         </a>
 
         <a href="#upload">
-            📁 Upload Logs
+            &#x1F4C1; Upload Logs
         </a>
 
     </nav>
@@ -70,9 +70,7 @@
 
     </div>
 
-    <div class="monitoring">
-        ● Monitoring Active
-    </div>
+    <div class="monitoring">Monitoring Active</div>
 
 </header>
 
@@ -86,7 +84,7 @@
     <div class="stat-card">
 
         <div class="stat-icon">
-            📋
+            &#x1F4CB;
         </div>
 
         <div>
@@ -106,7 +104,7 @@
     <div class="stat-card">
 
         <div class="stat-icon danger">
-            🚨
+            &#x1F6A8;
         </div>
 
         <div>
@@ -125,9 +123,7 @@
 
     <div class="stat-card">
 
-        <div class="stat-icon warning">
-            ⚠️
-        </div>
+        <div class="stat-icon warning">!</div>
 
         <div>
 
@@ -146,7 +142,7 @@
     <div class="stat-card">
 
         <div class="stat-icon critical">
-            🔥
+            &#x1F525;
         </div>
 
         <div>
@@ -549,6 +545,72 @@
 
 
 
+<!-- MITRE ATT&CK SUMMARY -->
+
+<section class="panel">
+
+    <h3>
+        MITRE ATT&CK Summary
+    </h3>
+
+    <p class="panel-description">
+        Security findings mapped to MITRE ATT&CK techniques.
+    </p>
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Technique ID</th>
+                    <th>Technique</th>
+                    <th>Events</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% for item in statistics.mitre_summary %}
+
+                <tr>
+
+                    <td>
+                        <strong>
+                            {{ item.id }}
+                        </strong>
+                    </td>
+
+                    <td>
+                        {{ item.technique }}
+                    </td>
+
+                    <td>
+                        {{ item.events }}
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+                    <td colspan="3">
+                        No MITRE ATT&CK techniques detected.
+                    </td>
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
 <!-- UPLOAD -->
 
 <section
@@ -566,7 +628,7 @@
         href="{{ url_for('generate_report') }}"
         class="report-button"
     >
-        📄 Export Security Report
+        &#x1F4C4; Export Security Report
     </a>
 
 </div>
@@ -592,7 +654,7 @@
         >
 
         <button type="submit">
-            🔍 Analyze Log
+            &#128269; Analyze Log
         </button>
 
     </form>
@@ -723,7 +785,7 @@
         <br>
         <small>{{ finding.mitre_technique }}</small>
     {% else %}
-        —
+        â€”
     {% endif %}
 </td>
 
@@ -1088,3 +1150,9 @@ severityFilter.addEventListener(
 </body>
 
 </html>
+
+
+
+
+
+
