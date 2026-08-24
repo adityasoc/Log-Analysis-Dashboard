@@ -1,23 +1,20 @@
 # 🛡️ Log Analysis Dashboard
 
-A Python + Flask based defensive cybersecurity dashboard for analyzing security logs, detecting suspicious activities, mapping events to MITRE ATT&CK techniques, calculating IP risk, and generating PDF security reports.
+> A lightweight SOC-style cybersecurity dashboard for security log analysis, threat detection, MITRE ATT&CK mapping, IP risk scoring, and automated PDF security reporting.
 
----
+![Log Analysis Dashboard](screenshots/dashboard-final.png)
 
-## 📌 Project Overview
+## 🎯 Project Highlights
 
-**Log Analysis Dashboard** is a lightweight SOC-style security monitoring and log analysis application.
-
-The system accepts structured `.log` or `.txt` files and performs:
-
-- Security event parsing
-- Suspicious activity detection
-- Severity classification
-- Risk scoring
-- IP-based risk analysis
-- MITRE ATT&CK technique mapping
-- Security statistics
-- PDF security report generation
+- 🔍 Automated security log analysis
+- 🚨 Brute-force and suspicious activity detection
+- ⚡ Suspicious PowerShell detection
+- 🔑 Credential dumping detection
+- 🌐 IP-based risk scoring
+- 🎯 MITRE ATT&CK technique mapping
+- 📊 Security statistics and severity analysis
+- 📑 Automated PDF security reports
+- 🖥️ Flask-based SOC-style dashboard
 
 ### 🔄 Security Analysis Workflow
 
