@@ -7,40 +7,55 @@ MITRE_MAPPING = {
         "id": "T1003",
         "technique": "OS Credential Dumping"
     },
+
     "Suspicious PowerShell Activity": {
         "id": "T1059.001",
         "technique": "PowerShell"
     },
+
     "Brute Force / Repeated Failed Login": {
         "id": "T1110",
         "technique": "Brute Force"
     },
+
+    # A single failed login does not prove brute force.
     "Failed Login": {
-        "id": "T1110",
-        "technique": "Brute Force"
+        "id": "N/A",
+        "technique": "Unmapped"
     },
+
+    # A blocked connection alone does not establish a specific
+    # Application Layer Protocol technique.
     "Blocked Network Connection": {
-        "id": "T1071",
-        "technique": "Application Layer Protocol"
+        "id": "N/A",
+        "technique": "Unmapped"
     },
+
     "Unauthorized Access": {
         "id": "T1078",
         "technique": "Valid Accounts"
     },
+
+    # "Suspicious Activity" is too generic for a reliable
+    # MITRE ATT&CK technique mapping.
     "Suspicious Activity": {
-        "id": "T1059",
-        "technique": "Command and Scripting Interpreter"
+        "id": "N/A",
+        "technique": "Unmapped"
     },
+
+    # A critical severity level alone does not identify
+    # User Execution.
     "Critical Security Event": {
-        "id": "T1204",
-        "technique": "User Execution"
+        "id": "N/A",
+        "technique": "Unmapped"
     },
+
+    # A generic system error does not indicate Impair Defenses.
     "System Error": {
-        "id": "T1562",
-        "technique": "Impair Defenses"
+        "id": "N/A",
+        "technique": "Unmapped"
     }
 }
-
 
 def add_mitre_mapping(finding):
     """
