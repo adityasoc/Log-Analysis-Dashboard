@@ -396,8 +396,8 @@ def create_report(
         7
     )
 
-    # --------------------------------------------------------
-    # STATISTICS
+       # --------------------------------------------------------
+    # SECURITY STATISTICS
     # --------------------------------------------------------
 
     pdf.add_page()
@@ -406,24 +406,201 @@ def create_report(
         "Security Statistics"
     )
 
-    if isinstance(
-        statistics,
-        dict
-    ):
+    if isinstance(statistics, dict):
 
-        for key, value in statistics.items():
+        statistic_items = [
+            ("Total Logs", statistics.get("total_logs", 0)),
+            ("Security Findings", statistics.get("total_findings", 0)),
+            ("Critical", statistics.get("critical", 0)),
+            ("High", statistics.get("high", 0)),
+            ("Medium", statistics.get("medium", 0)),
+            ("Low", statistics.get("low", 0)),
+        ]
+
+        for key, value in statistic_items:
 
             pdf.add_key_value(
                 f"{key}:",
-                value
+                str(value)
             )
 
-    elif statistics:
+        # ----------------------------------------------------
+        # TOP SUSPICIOUS IPS
+        # ----------------------------------------------------
 
-        pdf.safe_multicell(
-            statistics,
-            7
+        pdf.section_title(
+            "Top Suspicious IPs"
         )
+
+        top_ips = statistics.get(
+            "ip_risk",
+            []
+        )
+
+        if top_ips:
+
+            pdf.set_font(
+                "Helvetica",
+                "B",
+                9
+            )
+
+            pdf.cell(
+                55,
+                7,
+                "IP Address"
+            )
+
+            pdf.cell(
+                25,
+                7,
+                "Events"
+            )
+
+            pdf.cell(
+                25,
+                7,
+                "Score"
+            )
+
+            pdf.cell(
+                35,
+                7,
+                "Risk"
+            )
+
+            pdf.ln(7)
+
+            pdf.set_font(
+                "Helvetica",
+                "",
+                9
+            )
+
+            for item in top_ips:
+
+                pdf.cell(
+                    55,
+                    7,
+                    clean_text(
+                        item.get("ip", "")
+                    )
+                )
+
+                pdf.cell(
+                    25,
+                    7,
+                    str(
+                        item.get("events", 0)
+                    )
+                )
+
+                pdf.cell(
+                    25,
+                    7,
+                    str(
+                        item.get("score", 0)
+                    )
+                )
+
+                pdf.cell(
+                    35,
+                    7,
+                    clean_text(
+                        item.get("risk", "")
+                    )
+                )
+
+                pdf.ln(7)
+
+        else:
+
+            pdf.safe_multicell(
+                "No suspicious IP information available.",
+                7
+            )
+
+        # ----------------------------------------------------
+        # MITRE ATT&CK SUMMARY
+        # ----------------------------------------------------
+
+        pdf.section_title(
+            "MITRE ATT&CK Summary"
+        )
+
+        mitre_summary = statistics.get(
+            "mitre_summary",
+            []
+        )
+
+        if mitre_summary:
+
+            pdf.set_font(
+                "Helvetica",
+                "B",
+                9
+            )
+
+            pdf.cell(
+                30,
+                7,
+                "ID"
+            )
+
+            pdf.cell(
+                90,
+                7,
+                "Technique"
+            )
+
+            pdf.cell(
+                25,
+                7,
+                "Events"
+            )
+
+            pdf.ln(7)
+
+            pdf.set_font(
+                "Helvetica",
+                "",
+                9
+            )
+
+            for item in mitre_summary:
+
+                pdf.cell(
+                    30,
+                    7,
+                    clean_text(
+                        item.get("id", "")
+                    )
+                )
+
+                pdf.cell(
+                    90,
+                    7,
+                    clean_text(
+                        item.get("technique", "")
+                    )
+                )
+
+                pdf.cell(
+                    25,
+                    7,
+                    str(
+                        item.get("events", 0)
+                    )
+                )
+
+                pdf.ln(7)
+
+        else:
+
+            pdf.safe_multicell(
+                "No MITRE ATT&CK mappings available.",
+                7
+            )
 
     else:
 
@@ -431,7 +608,6 @@ def create_report(
             "No statistics available.",
             7
         )
-
     # --------------------------------------------------------
     # FINDINGS
     # --------------------------------------------------------
