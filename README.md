@@ -239,9 +239,12 @@ venv\Scripts\activate
 pip install -r requirements.txt
 
 
-▶️ Running the Application
+## ▶️ Running the Application
 
 Start the Flask dashboard:
+
+```bash
+python app.py
 
 Then open the application in your browser:
 
